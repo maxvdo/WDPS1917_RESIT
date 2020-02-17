@@ -90,9 +90,6 @@ Used the same way as score.py, originally with golden file as first argument and
 - run_all_normal.sh
 Script that runs all steps without use of spark. It starts an elasticsearch server from folder in /var/scratch2/wdps1917, just copied from the one in urbani path. It assumes defaults paths of the data folder as described above (arguments can be modified).
 
-- run_normal.sh
-Same as run_all_normal script but assumes an elasticsearch server is set up beforehand and have to define the node it is running on in the script. This is because our elasticsarch on DAS4 sometimes did not want to start due to the last state not changing yellow.
-
 - prep_commands_spark.sh (NOT USED)
 There are different ways to start a spark cluster using standalone or yarn manager for example. Here we manually start master and slaves, as with yarn it just kept running for us and did not end.
 This script reserves the necessary nodes for master and slave nodes. In this script you can define the x amount of worker nodes in the for-loop that you want to reserve. Then it uses preserve -llist to give an overview of the nodes and can also look at the reserve IDs to be specified in run_all_spark.sh to run commands on specific nodes. So this is run before run_all_spark.sh.
@@ -111,7 +108,7 @@ Note: In run_entity_linking and run_entity_linking_spark, we save the prediction
 If one assumes the default paths and structure as described above then you can simply run:
 
 Without Spark:
-- bash run_all_normal.sh or bash run_normal.sh depending on which elasticsearch server to use.
+- bash run_all_normal.sh
 - This will produce predictions__.txt in the predictions folder and results_predictions__.txt in the results folder.
 
 We can modify paths as arguments of run_entity_linking.py in run_all.sh if one wants to by using:
