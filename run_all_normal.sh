@@ -1,5 +1,7 @@
 ES_PORT=9200
 ES_BIN=/var/scratch2/wdps1917/elasticsearch-2.4.1/bin/elasticsearch
+IN_FILE= ./data/sample.warc.gz
+OUT_FILE= ./data/own_annotations.tsv
 
 >".es_log*"
 
@@ -17,7 +19,7 @@ echo "python path"
 export PYTHONPATH=/home/jurbani/trident/build-python
 
 echo "entity_linking starting"
-prun -t 18000 -np 1 python3.5 run_entity_linking.py $ES_NODE:$ES_PORT "_" ./data/sample.warc.gz ./data/own_annotations.tsv > .log.txt
+prun -t 18000 -np 1 python3.5 run_entity_linking.py $ES_NODE:$ES_PORT "_" $IN_FILE $OUT_FILE > .log.txt
 
 #echo "score"
 #prun -np 1 python3.5 score_extended.py ./data/own_annotations.tsv ./predictions/predictions__.txt 
