@@ -104,12 +104,12 @@ Note: In run_entity_linking and run_entity_linking_spark, we save the prediction
 
 If one assumes the default paths and structure as described above then you can simply run:
 
-###Without Spark:
+### Without Spark: ###
 - `bash run_all_normal.sh`.
     - Elastic Search PORT can be changed in *ES_PORT*.
     - Elastic Search server instance can be changed in *ES_BIN*.
     - Input warc file can be changed in *IN_FILE*.
-    - **In some cases there will be `permission denied` for the required files in IN_FILE and OUT_FILE, in that case add the respective file paths to the designated arguments in the python execution script of run_all_normal.sh. eg: prun -t 18000 -np 1 python3.5 run_entity_linking.py $ES_NODE:$ES:PORT "_" ./data/sample.warc.gz ./data/own_annotations.tsv > .log.txt **
+    - **In some cases there will be `permission denied` for the required files in IN_FILE and OUT_FILE, in that case add the respective file paths to the designated arguments in the python execution script of run_all_normal.sh. eg: prun -t 18000 -np 1 python3.5 run_entity_linking.py $ES_NODE:$ES:PORT "_" ./data/sample.warc.gz ./data/own_annotations.tsv > .log.txt**
 - This will produce `predictions_.txt` in the *predictions* folder and `results_predictions_.txt` in the *results* folder.
 - The above code runs and gives f1 score based on handmade annotations in `/data/own_annotations.tsv`.
 - *To get score based on user defined warc files, run `score.py` as:*
