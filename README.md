@@ -1,32 +1,30 @@
-
 --------------------------------------------
 
-RESIT ASSIGNMENT WEB DATA PROCESSING SYSTEMS 
+#RESIT ASSIGNMENT WEB DATA PROCESSING SYSTEMS
 
-MAX VAN DEN OETELAAR
-2662601
+###MAX VAN DEN OETELAAR (2662601)
 
-In the .zip file, you will find:
+In the folder, you will find:
 
 - Python scripts to run the assignment (described below).
-- "predictions" folder, which include the named and linked entities (clueweb_id + entity label + freebase_id). I also included the predictions
-   file from the last time I successfully ran the code. This is called "predictions_reference" and was run using the run_all_normal.sh (without spark).
-- "results" folder, which include a summary of the results. I also included the results file from the last time I successfully ran the code. 
-   This is called "results_predictions_reference" and was run using the run_all_normal.sh (without spark).
-- "data" folder, which includes the sample and annotation files.
+- *"predictions"* folder, which include the named and linked entities (clueweb_id + entity label + freebase_id). I also included the predictions
+   file from the last time I successfully ran the code. This is called *"predictions_reference"* and was run using the *run_all_normal.sh* (without spark).
+- *"results"* folder, which includes a summary of the results. I also included the results file from the last time I successfully ran the code. 
+   This is called *"results_predictions_reference"* and was run using the *run_all_normal.sh* (without spark).
+- *"data"* folder, which includes the sample and annotation files.
 
 
-The .zip can also be found at: https://github.com/maxvdo/WDPS1917_RESIT.git
+The repository for the project: https://github.com/maxvdo/WDPS1917_RESIT.git
 
 --------------------------------------------
  
 ## Python version ##
-For our tests on DAS4, we used python 3.5.2 and locally 3.7.0
+For our tests on DAS4, we used python 3.5.2 and locally 3.7.0 
 
 ------------------------------------------------------------------------------------------------------------
 ## Packages ##
 
-# Pre-processing #
+### Pre-processing ###
 
 - WARC package was used to open the warc files and easily extract content and key-ID for convenience
 - This can be installed for PYTHON 3 with for example pip3.5 install --user warc3-wet
@@ -36,7 +34,7 @@ For our tests on DAS4, we used python 3.5.2 and locally 3.7.0
 - Install command: pip install beautifulsoup4
 - If an error occurs when using it and parsing, you may need to download lxml package: pip3.5 install lxml --user 
 
-# NER detection #
+### NER detection ###
 - NLTK package components (such as tokenize, POS tag and NE chunker) are used to perform NER. In particular, we used the following models to download their models one time only:
 - pip3.5 install NLTK --user 
 
@@ -47,10 +45,10 @@ nltk.download('words')
 
 - Note: If an error occurs about NLTK still, then you might have to install the package six: E.g pip3.5 install --user six
 
-# Elasticsearch #
+### Elasticsearch ###
 - requests package needed pip3.5 install --user requests
 
-# Trident #
+### Trident ###
 - Trident python bindings are used to sparql queries
 - so set export PYTHONPATH=/home/jurbani/trident/build-python to import trident
 - This is the reason why python 3.5 was used
@@ -90,40 +88,33 @@ Used the same way as score.py, originally with golden file as first argument and
 - run_all_normal.sh
 Script that runs all steps without use of spark. It starts an elasticsearch server from folder in /var/scratch2/wdps1917, just copied from the one in urbani path. It assumes defaults paths of the data folder as described above (arguments can be modified).
 
-- prep_commands_spark.sh (NOT USED)
+- prep_commands_spark.sh *(NOT USED)*
 There are different ways to start a spark cluster using standalone or yarn manager for example. Here we manually start master and slaves, as with yarn it just kept running for us and did not end.
 This script reserves the necessary nodes for master and slave nodes. In this script you can define the x amount of worker nodes in the for-loop that you want to reserve. Then it uses preserve -llist to give an overview of the nodes and can also look at the reserve IDs to be specified in run_all_spark.sh to run commands on specific nodes. So this is run before run_all_spark.sh.
 
-- run_all_spark.sh (NOT USED)
+- run_all_spark.sh *(NOT USED)*
 After reserving the nodes and following the method to start things manually, we must define the nodes in this script to distinguish which one is master and which ones are slave nodes. We do this by defining the node number of the master and its reserve ID such that we can launch the start-master script (path also to be defined if different) on it. We also must define the reserve IDs of the slave nodes to start the start-slave script and stop it at the end. The reserve IDs can be found by using preserve -llist. 
-
 Also, here we assume the elasticsearch server is started beforehand and we define the node and the port. Having defined all this in this script, we can run this script. It will start master and slave nodes, execute the main script of run_entity_linking_spark.py and stop the master and slave nodes afterwards.
 Another way to start the cluster is to run the start-all script on the master and define the slave nodes in the conf/slaves file of the spark application folder. This method did not work for us while testing because master and worker nodes used different python versions. We tried to solve this with defining PYSPARK_PYTHON and PYSPARK_DRIVER_PYTHON to the directory of the python/3.5.2 which is a shared package. But workers do no have access to this because the module of python/3.5.2 is not loaded in for them. It could be the case that this way of starting the master and slave nodes does not give a proper connection, which would explain the missing speedup to be described in the results section. In this default script we have the "_spark" prefix to distinguish from the other.
 
 Note: In run_entity_linking and run_entity_linking_spark, we save the predictions in predictions folder and the score in results folder as described above. The score is saved by directing the output with the ">" command. To still print the score, we run the score_extended.py separately outside it again. Here it assumes the same prefix as used before. If the argument in run_entity_linking is changed, one could see another output if old predictions are present. So one can check the scores in results folder just to be sure. 
 
 ------------------------------------------------------------------------------------------------------------
-## Running ##
+## Running the code
 
 If one assumes the default paths and structure as described above then you can simply run:
 
-Without Spark:
-- bash run_all_normal.sh
-- This will produce predictions__.txt in the predictions folder and results_predictions__.txt in the results folder.
+###Without Spark:
+- `bash run_all_normal.sh`.
+    - Elastic Search PORT can be changed in *ES_PORT*.
+    - Elastic Search server instance can be changed in *ES_BIN*.
+    - Input warc file can be changed in *IN_FILE*.
+- This will produce `predictions_.txt` in the *predictions* folder and `results_predictions_.txt` in the *results* folder.
+- The above code runs and gives f1 score based on handmade annotations in `/data/own_annotations.tsv`.
+- *To get score based on user defined warc files, run `score.py` as:*
+    - `python3.5 score.py {gold_file_path} ./data/predictions__.txt`
+    - `python3.5 score.py {gold_file_path} {annotated_result_path}`, for a different annotated output path.
 
-We can modify paths as arguments of run_entity_linking.py in run_all.sh if one wants to by using:
-
-python run_entity_linking.py <Required Elasticsearch domain> <optional label after prefix> <optional warc path> <optional annotations path>
-
-run_entity_linking.py requires 1 argument minimal which is the elasticsearch domain so for example assuming elasticsearch on node001:9200:
-
-python3.5 run_entity_linking.py node001:9200
-
-This means we assume the annotations_path = "./data/sample.annotations.tsv" and warc_path is "./data/sample.warc.gz" and we give no additional label.
-
-If we want to give a label "test_run" and give other annotations file than we can run:
-
-python run_entity_linking.py node001:9200 "test_run" ./data/sample.warc.gz ./data/own_annotations.tsv
 
 The reason we also give an annotations file is because at the end, run_entity_linking computes the score, saves it in the results folder with the same prefix and also writes the amount of time in seconds it took to compute. So here we get predictions/predictions_test_run.txt and results/results_predictions_test_run.txt.
 
@@ -141,7 +132,7 @@ Note that we assume 5 hours max in our script file, with the sample file a littl
 
 Our files on das4 can be found at:
 
-"/var/scratch2/wdps1917/wdps1917_resit" folder on das4 
+*`/var/scratch2/wdps1917/WDPS1917_RESIT` folder on das4* 
 
 ------------------------------------------------------------------------------------------------------------
 ## Original (old) method ##
@@ -193,7 +184,7 @@ This leads to:
 
 The precision is low because we predict a lot but we only have so much annotations. This originally takes around 4900 seconds.
 
-With implementation of spark, we ran it using 3 workers, same results as same method, but the times are less consistent. One run it ran within 3500 seconds and other time in 5200 seconds. We mainly have some doubts if the cluster is correctly setup and making use of workers rather than the program not working. (Not sure how to look at the WEB UI with das4). As of right now, we know 3 ways of starting the cluster and launching application, but for 2 of the 3 ways we do not know how to solve, which is why we went the first method of manually starting the launch scripts. But method 2 should be closely related to method 1 but gives error of not using the same python version as mentioned before.
+With implementation of spark *(not used in das cluster)*, we ran it using 3 workers, same results as same method, but the times are less consistent. One run it ran within 3500 seconds and other time in 5200 seconds. We mainly have some doubts if the cluster is correctly setup and making use of workers rather than the program not working. (Not sure how to look at the WEB UI with das4). As of right now, we know 3 ways of starting the cluster and launching application, but for 2 of the 3 ways we do not know how to solve, which is why we went the first method of manually starting the launch scripts. But method 2 should be closely related to method 1 but gives error of not using the same python version as mentioned before.
 
 Thus to be sure to increase the scalability a bit, we also remove some queries and ranking to make it a bit faster:
 - We reduced the query label order to maximum of 2 categories. If an entity does not match with 2 categories it will not go a third or fourth one to execute its queries.
@@ -220,11 +211,11 @@ Without use of spark:
 ------------------------------------------------------------------------------------------------------------
 ## FINAL RESULTS ##
 
-Finally, I reduced the elastic search results from 1000 to 5. Additionally, I reduced the top freebase IDs based on the elastic search score. In the code, this is denoted by 'r'. Again, I ran it without the use of Spark. I got the following results:
+Finally, I reduced the elastic search results from 1000 to 5 based on the top scores. In the code, this is denoted by 'r'. Again, I ran it without the use of Spark. I got the following results:
  
 
 -  886 golden entities
--  predictions
+-  38941 predictions
 -  731 mappings 
 -  379 of them are correct mappings. 
 
@@ -235,7 +226,6 @@ This leads to:
 
 This finished in 2147 seconds.
 
-Slightly worse results, but we do decrease the time to run it (which was the biggest problem of the previous version of the assignment).
+Slightly worse results, but we do decrease the execution time to run it (which was the biggest problem of the previous version of the assignment).
 
 ------------------------------------------------------------------------------------------------------------
-
