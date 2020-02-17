@@ -1,8 +1,8 @@
 --------------------------------------------
 
-#RESIT ASSIGNMENT WEB DATA PROCESSING SYSTEMS
+# RESIT ASSIGNMENT WEB DATA PROCESSING SYSTEMS #
 
-###MAX VAN DEN OETELAAR (2662601)
+### MAX VAN DEN OETELAAR (2662601) ###
 
 In the folder, you will find:
 
